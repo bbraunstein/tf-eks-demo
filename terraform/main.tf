@@ -2,9 +2,16 @@ provider "aws" {
   region = "us-east-1"
 }
 
-variable "vpc_id" {}
-variable "ec2_key_pair" {}
-variable "sg_id" {}
+variable "vpc_id" {
+  description = "VPC ID. Must have internet accessible subnets either public via IGW or private via NAT GW"
+}
+variable "ec2_key_pair" {
+  description = "EC2 Keyname to connect to node group"
+}
+
+variable "sg_id" {
+  description = "ID of a security group that allows inbound access to your NodeGroups. Can be world accessible or restricted to a single IP"
+}
 
 data "aws_subnet_ids" "subnet_ids" {
   vpc_id = var.vpc_id
