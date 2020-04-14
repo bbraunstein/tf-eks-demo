@@ -19,14 +19,20 @@ data "aws_subnet_ids" "subnet_ids" {
 
 data "aws_subnet" "subnet" {
   for_each = data.aws_subnet_ids.subnet_ids.ids
-  value    = each.value
+  id       = each.value
 }
 
 resource "aws_eks_cluster" "eks_cluster" {
   name     = "EksCluster"
   role_arn = aws_iam_role.eks_iam_role.arn
   vpc_config {
-    subnet_ids = [for s in data.aws_subnet.subnet : s.id]
+    subnet_ids = [
+      "subnet-0a439de8208bf5fd6",
+      "subnet-00ee061bd04c1e6b9",
+      "subnet-02dcbfdc53f5b0b91",
+      "subnet-0353c807e79e72f20",
+      "subnet-0d8400bff3b9b587f",
+    ]
   }
 
   # Ensure that IAM Role permissions are created before and after EKS Cluster handling.
@@ -99,7 +105,13 @@ resource "aws_eks_node_group" "eks_node_group" {
   cluster_name = aws_eks_cluster.eks_cluster.name
   node_group_name = "eks-node-group"
   node_role_arn = aws_iam_role.node_group_iam_role.arn
-  subnet_ids = [ for s in data.aws_subnet.subnets : s.id ]
+  subnet_ids = [ 
+    "subnet-0a439de8208bf5fd6",
+    "subnet-00ee061bd04c1e6b9",
+    "subnet-02dcbfdc53f5b0b91",
+    "subnet-0353c807e79e72f20",
+    "subnet-0d8400bff3b9b587f",
+  ]
   scaling_config {
     desired_size = 2
     max_size = 2
